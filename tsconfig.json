@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "ES2015",
+        "outDir": "lib",
+        //"noImplicitAny": false,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "jsx": "react"
+    },
+    "include": [
+        "**/*.d.ts",
+        "**/*.ts",
+        "**/*.tsx"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
