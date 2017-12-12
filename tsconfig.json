@@ -1,12 +1,18 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "module": "ES2015",
         "outDir": "lib",
-        //"noImplicitAny": false,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "jsx": "react"
+        "sourceMap": true,
+        "noImplicitAny": false,
+        "module": "commonjs",
+        "target": "es5",
+        "jsx": "react",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "strictNullChecks": false,
+        "typeRoots": [
+            "@types",
+            "./@types"
+        ]
     },
     "include": [
         "**/*.d.ts",

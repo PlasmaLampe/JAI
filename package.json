@@ -10,9 +10,10 @@
   },
   "dependencies": {
     "@types/material-ui": "^0.18.5",
+    "@types/promise": "^7.1.30",
     "@types/react": "^16.0.28",
     "@types/react-dom": "^16.0.3",
-    "@types/promise": "^7.1.30",
+    "js-regression": "^1.0.10",
     "lodash": "^4.17.4",
     "material-ui": "^0.20.0",
     "promise": "^8.0.1",
