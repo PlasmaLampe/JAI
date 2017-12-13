@@ -14,6 +14,7 @@ import {IFinancialData} from '../typings/yahoo-finance';
 import {IQuote} from '../typings/yahoo-finance';
 import {IHistoricalQuote} from '../typings/yahoo-finance';
 import { Util } from "../util";
+import { IHistoricalCandle } from './candle';
 
 export class Company {
     
@@ -26,7 +27,7 @@ export class Company {
       private defaultKeyStatistics: IDefaultKeyStatistics;
       private summaryProfile: ISummaryProfile;
       private financialData: IFinancialData;
-      private historialData: IHistoricalQuote[];
+      private candles: IHistoricalCandle[];
     
       constructor(readonly symbol: string) {
       }
@@ -63,8 +64,21 @@ export class Company {
             to: to,
             // period: 'd'  // 'd' (daily), 'w' (weekly), 'm' (monthly), 'v' (dividends only)
           }, (err, quotes: IHistoricalQuote[]) => {
+
+            console.log(quotes);
               
-              this.historialData = quotes;
+            this.candles = [];
+
+            for (const quoteEntry of quotes) {
+              const newCandle: IHistoricalCandle = new IHistoricalCandle(this.symbol, quoteEntry);
+
+              if(this.candles.length > 0){
+                newCandle.setPreviousCandle(this.candles[this.candles.length - 1]);
+                this.candles[this.candles.length - 1].setNextCandle(newCandle);
+              } 
+
+              this.candles.push(newCandle);
+            }
             
               success();
           });
@@ -72,8 +86,8 @@ export class Company {
         });
       }
 
-      public getHistoricalData(): IHistoricalQuote[] { // FixME: add caching
-        return this.historialData;
+      public getHistoricalData(): IHistoricalCandle[] { // FixME: add caching
+        return this.candles;
       }
     
     }

@@ -3,40 +3,16 @@ import { Util } from "../util";
 const _ = require('lodash');
 
 declare const require;
-// https://www.npmjs.com/package/js-regression FIXME: add types
-const jsregression = require('js-regression');
+// https://github.com/Tom-Alexander/regression-js FIXME: add types
+const regression = require('regression');
 
-export class MinerFactory {
+export class Predictor {
 
     /**
-     * // === training data generated from y = 2.0 + 5.0 * x + 2.0 * x^2 === //
-        var data = [];
-        for(var x = 1.0; x < 100.0; x += 1.0) {
-        var y = 2.0 + 5.0 * x + 2.0 * x * x + Math.random() * 1.0;
-        data.push([x, x * x, y]); // Note that the last column should be y the output
-        }
-        
-        // === Create the linear regression === //
-        var regression = new jsregression.LinearRegression({
-        alpha: 0.001, // 
-        iterations: 300,
-        lambda: 0.0
-        });
-        // can also use default configuration: var regression = new jsregression.LinearRegression(); 
-        
-        // === Train the linear regression === //
-        var model = regression.fit(data);
-        
-        // === Print the trained model === //
-        console.log(model);
-        
-        
-        // === Testing the trained linear regression === //
-        var testingData = [];
-        for(var x = 1.0; x < 100.0; x += 1.0) {
-        var actual_y = 2.0 + 5.0 * x + 2.0 * x * x + Math.random() * 1.0;
-        var predicted_y = regression.transform([x, x * x]);
-        console.log("actual: " + actual_y + " predicted: " + predicted_y); 
+        import  from '';
+        const result = regression.linear([[0, 1], [32, 67], [12, 79]]);
+        const gradient = result.equation[0];
+        const yIntercept = result.equation[1];
         }
      */
 
@@ -54,17 +30,22 @@ export class MinerFactory {
 
         Util.debugLog('>> creating regression model for input fields ', inputFields);
 
-        const resultModel = MinerFactory.createDataMapFromInputObjects(obj, inputFields,trainingPrediction);
-
-        Util.debugLog('>> created data map ', resultModel);
-
-        var regression = new jsregression.LogisticRegression(); // Fixme: Austauschbar machen
-        //var regression = new jsregression.LinearRegression(); // Fixme: Austauschbar machen
+        const resultModel = Predictor.createDataMapFromInputObjects(obj, inputFields,trainingPrediction);
+        const result = regression.linear(resultModel, {
+            order: 3,
+            precision: 4,
+          });
         
-        // === Train the linear regression === //
-        regression.fit(resultModel);
+        Util.debugLog('>> created data map ', resultModel);
+        Util.debugLog('>> created linear model ', result);
 
-        return regression;
+        const gradient = result.equation[0];
+        const yIntercept = result.equation[1];
+
+        Util.debugLog('>> used gradient ', gradient);
+        Util.debugLog('>> yIntercept ', yIntercept);
+
+        return result;
     }
 
      /**
@@ -82,10 +63,7 @@ export class MinerFactory {
 
         Util.debugLog('>> testing given regression model for input fields ', inputFields);
 
-        const resultModel = MinerFactory.createDataMapFromInputObjects(obj, inputFields,trainingPrediction);
-
-        // === Train the linear regression === //
-        regression.fit(resultModel);
+        const resultModel = Predictor.createDataMapFromInputObjects(obj, inputFields,trainingPrediction);
 
         for(const row of resultModel){
 
@@ -94,7 +72,7 @@ export class MinerFactory {
             testrow.pop();
 
             // run test prediction
-            const predicted_y = regression.transform(testrow);
+            const predicted_y = regression.predict(testrow);
 
             Util.debugLog('>> tested ' + JSON.stringify(testrow) + ' | actual: ' 
                 + row[row.length-1] + ' predicted: ' + predicted_y);
