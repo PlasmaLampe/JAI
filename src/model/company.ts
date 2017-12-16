@@ -64,8 +64,6 @@ export class Company {
             to: to,
             // period: 'd'  // 'd' (daily), 'w' (weekly), 'm' (monthly), 'v' (dividends only)
           }, (err, quotes: IHistoricalQuote[]) => {
-
-            console.log(quotes);
               
             this.candles = [];
 

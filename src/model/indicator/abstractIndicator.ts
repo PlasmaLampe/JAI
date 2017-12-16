@@ -21,35 +21,42 @@ export interface IAbstractLineIndicatorFormat extends IAbstractIndicatorFormat {
 
 export abstract class AbstractIndicator <OutputFormat extends IAbstractIndicatorFormat> {
 
-  protected readonly indicatorData: OutputFormat[];
+  protected indicatorData: OutputFormat[];
 
-  constructor(public readonly name: string, protected readonly dataSrc : IHistoricalCandle[]) {
+  constructor(public readonly name: string) {
     Util.debugLog('>> Creating new indicator with name ' + name);
+  }
 
-    try{
-        this.indicatorData = this.evaluateInputData(dataSrc);
-    } catch(e) {
-        console.error('>> Error while loading Indicator ' + this.name, e);
+  public abstract loadData(dataSrc : IHistoricalCandle[]): void;
+
+  public printToConsole() : void {
+    for(const entry of this.indicatorData) {
+      console.log(this.toString(entry));
     }
-
   }
 
   protected abstract evaluateInputData(dataSrc: IHistoricalCandle[]): OutputFormat[];
 
   protected abstract toString(src: OutputFormat) : string;
-
-  public printToConsole() : void {
-      for(const entry of this.indicatorData) {
-        console.log(this.toString(entry));
-      }
-  }
-
 }
 
 export abstract class AbstractLineIndicator extends AbstractIndicator<IAbstractLineIndicatorFormat> {
 
+  constructor(public readonly name: string) {
+            super(name);
+      }
+
+    public loadData(dataSrc : IHistoricalCandle[]): void {
+        try{
+          this.indicatorData = this.evaluateInputData(dataSrc);
+      } catch(e) {
+          console.error('>> Error while loading Indicator ' + this.name, e);
+      }
+    }
+
     protected toString(src: IAbstractLineIndicatorFormat) : string {
-        return '>> Date ' + src.date + ' and value: ' + src.value;
+        return '>> Indicator ' + this.name + ' for date ' 
+          + src.date + ' and value: ' + src.value;
     }
 
 }

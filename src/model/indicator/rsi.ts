@@ -5,8 +5,8 @@ import {IHistoricalCandle} from './../candle'
 
 export class RSI extends AbstractLineIndicator {
     
-      constructor(protected readonly interval: number, protected readonly dataSrc : IHistoricalCandle[]) {
-        super('RSI' + interval, dataSrc);
+      constructor(protected readonly interval: number) {
+        super('RSI' + interval);
       }
     
     

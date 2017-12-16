@@ -7,13 +7,21 @@ export class Queue<T> {
 
     constructor(private readonly maxLength : number) {
         this.buffer = [];
+        console.log('>> Creating Queue with max length of ' + this.maxLength)
     }
 
     push(entry : T) : void {
         if(this.buffer.length < this.maxLength) {
             this.buffer.push(entry);
         } else {
-            this.buffer = _.drop(this.buffer).push(entry);
+            let newBuffer: T[] = [];
+
+            for(let pos: number = 1; pos < this.maxLength; pos ++) {
+                newBuffer.push(this.buffer[pos]);
+            }
+            newBuffer.push(entry);
+
+            this.buffer = newBuffer;
         }
     }
 

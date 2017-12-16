@@ -6,8 +6,8 @@ import {IHistoricalCandle} from './../candle'
 // => Fixme: aggregate to complete BB indicator
 export class UpperBB extends AbstractLineIndicator {
     
-      constructor(protected readonly interval: number, protected readonly dataSrc : IHistoricalCandle[]) {
-        super('UpperBB' + interval, dataSrc);
+      constructor(protected readonly interval: number) {
+        super('UpperBB' + interval);
       }
     
     
@@ -20,8 +20,8 @@ export class UpperBB extends AbstractLineIndicator {
   
   export class LowerBB extends AbstractLineIndicator {
     
-      constructor(protected readonly interval: number, protected readonly dataSrc : IHistoricalCandle[]) {
-        super('LowerBB' + interval, dataSrc);
+      constructor(protected readonly interval: number) {
+        super('LowerBB' + interval);
       }
     
     
