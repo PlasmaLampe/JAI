@@ -6,7 +6,7 @@ import { IYahooFinance } from '../../typings/yahoo-finance';
 
 import {IHistoricalQuote} from '../../typings/yahoo-finance';
 import { Util } from "../../util";
-import { IHistoricalCandle } from './../candle';
+import { HistoricalCandle } from './../candle';
 
 export interface IAbstractIndicatorFormat {
   /**
@@ -27,7 +27,7 @@ export abstract class AbstractIndicator <OutputFormat extends IAbstractIndicator
     Util.debugLog('>> Creating new indicator with name ' + name);
   }
 
-  public abstract loadData(dataSrc : IHistoricalCandle[]): void;
+  public abstract loadData(dataSrc : HistoricalCandle[]): void;
 
   public printToConsole() : void {
     for(const entry of this.indicatorData) {
@@ -35,7 +35,7 @@ export abstract class AbstractIndicator <OutputFormat extends IAbstractIndicator
     }
   }
 
-  protected abstract evaluateInputData(dataSrc: IHistoricalCandle[]): OutputFormat[];
+  protected abstract evaluateInputData(dataSrc: HistoricalCandle[]): OutputFormat[];
 
   protected abstract toString(src: OutputFormat) : string;
 }
@@ -46,12 +46,16 @@ export abstract class AbstractLineIndicator extends AbstractIndicator<IAbstractL
             super(name);
       }
 
-    public loadData(dataSrc : IHistoricalCandle[]): void {
+    public loadData(dataSrc : HistoricalCandle[]): void {
         try{
           this.indicatorData = this.evaluateInputData(dataSrc);
       } catch(e) {
           console.error('>> Error while loading Indicator ' + this.name, e);
       }
+    }
+
+    public getIndicatorData() : IAbstractLineIndicatorFormat[] {
+      return this.indicatorData;
     }
 
     protected toString(src: IAbstractLineIndicatorFormat) : string {

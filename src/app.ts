@@ -2,7 +2,7 @@ import {Company} from './model/company';
 import { Predictor } from './model/predictor';
 import { IHistoricalQuote } from './typings/yahoo-finance';
 import { Util } from './util';
-import { IHistoricalCandle } from './model/candle';
+import { HistoricalCandle } from './model/candle';
 import { SMA } from './model/indicator/sma';
 
 import {AbstractLineIndicator} from './model/indicator/abstractIndicator'

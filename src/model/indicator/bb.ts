@@ -1,7 +1,7 @@
 import {AbstractLineIndicator} from './abstractIndicator'
 import {IAbstractLineIndicatorFormat} from './abstractIndicator'
 
-import {IHistoricalCandle} from './../candle'
+import {HistoricalCandle} from './../candle'
 
 // => Fixme: aggregate to complete BB indicator
 export class UpperBB extends AbstractLineIndicator {
@@ -11,7 +11,7 @@ export class UpperBB extends AbstractLineIndicator {
       }
     
     
-      protected evaluateInputData(dataSrc: IHistoricalCandle[]): IAbstractLineIndicatorFormat[] {
+      protected evaluateInputData(dataSrc: HistoricalCandle[]): IAbstractLineIndicatorFormat[] {
         //todo
         return []
       }
@@ -25,7 +25,7 @@ export class UpperBB extends AbstractLineIndicator {
       }
     
     
-      protected evaluateInputData(dataSrc: IHistoricalCandle[]): IAbstractLineIndicatorFormat[] {
+      protected evaluateInputData(dataSrc: HistoricalCandle[]): IAbstractLineIndicatorFormat[] {
         //todo
         return []
       }

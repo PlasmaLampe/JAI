@@ -1,7 +1,7 @@
 import {AbstractLineIndicator} from './abstractIndicator'
 import {IAbstractLineIndicatorFormat} from './abstractIndicator'
 
-import {IHistoricalCandle} from './../candle'
+import {HistoricalCandle} from './../candle'
 
 export class RSI extends AbstractLineIndicator {
     
@@ -10,7 +10,7 @@ export class RSI extends AbstractLineIndicator {
       }
     
     
-      protected evaluateInputData(dataSrc: IHistoricalCandle[]): IAbstractLineIndicatorFormat[] {
+      protected evaluateInputData(dataSrc: HistoricalCandle[]): IAbstractLineIndicatorFormat[] {
         //todo
         return []
       }

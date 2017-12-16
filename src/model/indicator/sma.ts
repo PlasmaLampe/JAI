@@ -6,7 +6,7 @@ import {IAbstractLineIndicatorFormat} from './abstractIndicator'
 
 import {Queue} from './../../queue'
 
-import {IHistoricalCandle} from './../candle'
+import {HistoricalCandle} from './../candle'
 
 export class SMA extends AbstractLineIndicator {
 
@@ -14,16 +14,16 @@ export class SMA extends AbstractLineIndicator {
         super('SMA' + interval);
       }
     
-      protected evaluateInputData(dataSrc: IHistoricalCandle[]): IAbstractLineIndicatorFormat[] {
+      protected evaluateInputData(dataSrc: HistoricalCandle[]): IAbstractLineIndicatorFormat[] {
           const output: IAbstractLineIndicatorFormat[] = [];
-          const buildUpQueue: Queue<IHistoricalCandle> = new Queue<IHistoricalCandle>(this.interval);
+          const buildUpQueue: Queue<HistoricalCandle> = new Queue<HistoricalCandle>(this.interval);
 
           for(const srcEntry of dataSrc){
             buildUpQueue.push(srcEntry);
 
             if(buildUpQueue.getContent().length >= this.interval - 1) {
                 let sum : number = 0;
-                console.log(buildUpQueue.getContent().length)
+
                 for(const qEntry of buildUpQueue.getContent()) {
                     sum += qEntry.close;
                 }

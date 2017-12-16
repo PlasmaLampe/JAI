@@ -7,7 +7,7 @@ import { IYahooFinance } from '../typings/yahoo-finance';
 import {IHistoricalQuote} from '../typings/yahoo-finance';
 import { Util } from "../util";
 
-export class IHistoricalCandle {
+export class HistoricalCandle {
 
   readonly date: string;
 
@@ -25,8 +25,8 @@ export class IHistoricalCandle {
   readonly bullishCandle: boolean;
   readonly bearishCandle: boolean;
 
-  private previousCandle: IHistoricalCandle;
-  private nextCandle: IHistoricalCandle;
+  private previousCandle: HistoricalCandle;
+  private nextCandle: HistoricalCandle;
 
   public descent: number; // do not write from the outside... fixme: readonly?
     
@@ -54,20 +54,20 @@ export class IHistoricalCandle {
 
   }
 
-  public setNextCandle(c: IHistoricalCandle) : void {
+  public setNextCandle(c: HistoricalCandle) : void {
       this.nextCandle = c;
   }
 
-  public setPreviousCandle(c: IHistoricalCandle) : void {
+  public setPreviousCandle(c: HistoricalCandle) : void {
     this.descent = this.close / c.close;
     this.previousCandle = c;
   }
 
-  public getNextCandle(): IHistoricalCandle {
+  public getNextCandle(): HistoricalCandle {
     return this.nextCandle;
   }
 
-  public getPreviousCandle(): IHistoricalCandle {
+  public getPreviousCandle(): HistoricalCandle {
     return this.previousCandle;
   }
   
