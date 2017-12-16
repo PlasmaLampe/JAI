@@ -20,19 +20,17 @@ export class Predictor {
       * Creates a regression model from the given input learning data
       *
       * @param obj:                 An array containing the learning data
-      * @param inputFields          The fields that should be tracked as x data
+      * @param inputFunction        A function describing the x value of the regression model
       * @param trainingPrediction   A function describing the training output value
       */
     public static createRegressionModel<DataSrc>(
                     obj:DataSrc[], 
-                    inputFields: string[], 
+                    inputFunction: (obj:DataSrc[], currentEntryNr: number) => any,
                     trainingPrediction: (obj:DataSrc[], currentEntryNr: number) => any) : any /* FIXME: Model */ {
 
-        Util.debugLog('>> creating regression model for input fields ', inputFields);
-
-        const resultModel = Predictor.createDataMapFromInputObjects(obj, inputFields,trainingPrediction);
-        const result = regression.linear(resultModel, {
-            order: 3,
+        const resultModel = Predictor.createDataMapFromInputObjects(obj, inputFunction, trainingPrediction);
+        const result = regression.polynomial(resultModel, {
+            order: 5,
             precision: 4,
           });
         
@@ -52,18 +50,16 @@ export class Predictor {
       * Tests a regression model from the given input learning data
       *
       * @param obj:                 An array containing the learning data
-      * @param inputFields          The fields that should be tracked as x data
+      * @param inputFunction        A function describing the x value of the regression model
       * @param trainingPrediction   A function describing the training output value
       */
       public static testRegressionModel<DataSrc>(
         regression: any,
         obj:DataSrc[], 
-        inputFields: string[], 
+        inputFunction: (obj:DataSrc[], currentEntryNr: number) => any,
         trainingPrediction: (obj:DataSrc[], currentEntryNr: number) => any) : any /* FIXME: Model */ {
 
-        Util.debugLog('>> testing given regression model for input fields ', inputFields);
-
-        const resultModel = Predictor.createDataMapFromInputObjects(obj, inputFields,trainingPrediction);
+        const resultModel = Predictor.createDataMapFromInputObjects(obj, inputFunction, trainingPrediction);
 
         for(const row of resultModel){
 
@@ -84,11 +80,11 @@ export class Predictor {
      * 
     *
     * @param obj:                 An array containing the learning data
-    * @param inputFields          The fields that should be tracked as x data
+    * @param inputFunction        A function describing the x value of the regression model
     * @param trainingPrediction   A function describing the training output value
     */
     public static createDataMapFromInputObjects<DataSrc>(obj:DataSrc[], 
-                    inputFields: string[], 
+                    inputFunction: (obj:DataSrc[], currentEntryNr: number) => any,
                     trainingPrediction: (obj:DataSrc[], currentEntryNr: number) => any) : number[][] {
 
         let resultModel : number[][] = [];
@@ -96,10 +92,8 @@ export class Predictor {
         for(let entryNr:number = 0; entryNr < obj.length; entryNr++) {
             let outputArrayForThisEntry : number[] = [];
 
-            // push training data -- x values
-            for(const fieldName of inputFields){
-                outputArrayForThisEntry.push(obj[entryNr][fieldName]);
-            }
+            // push training data -- x value
+            outputArrayForThisEntry.push(inputFunction(obj, entryNr));
 
             // calculate training Y data
             outputArrayForThisEntry.push(trainingPrediction(obj,entryNr));

@@ -70,6 +70,7 @@ export class Company {
             this.candles = [];
 
             for (const quoteEntry of quotes) {
+              // FIXME: ORDER!!!!
               const newCandle: IHistoricalCandle = new IHistoricalCandle(this.symbol, quoteEntry);
 
               if(this.candles.length > 0){
