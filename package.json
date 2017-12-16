@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha src/**/**.spec.js",
     "build": "tsc",
     "dev-run": "tsc && node lib/app.js"
   },
@@ -25,7 +25,9 @@
   "author": "PlasmaLampe",
   "license": "MIT",
   "devDependencies": {
+    "chai": "^4.1.2",
     "fs": "0.0.1-security",
+    "mocha": "^4.0.1",
     "ts-loader": "^3.2.0",
     "typescript": "^2.6.2",
     "webpack": "^3.10.0",
