@@ -1,0 +1,4 @@
+// takes stock or other security and 1...* orders and offer things like backtest and order execution
+export class AbstractStrategy {
+ // FIXME
+}

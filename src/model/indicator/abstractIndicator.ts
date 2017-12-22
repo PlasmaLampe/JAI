@@ -29,6 +29,10 @@ export abstract class AbstractIndicator <OutputFormat extends IAbstractIndicator
 
   public abstract loadData(dataSrc : HistoricalCandle[]): void;
 
+  public getIndicatorData() : OutputFormat[] {
+    return this.indicatorData;
+  }
+
   public printToConsole() : void {
     for(const entry of this.indicatorData) {
       console.log(this.toString(entry));
@@ -52,10 +56,6 @@ export abstract class AbstractLineIndicator extends AbstractIndicator<IAbstractL
       } catch(e) {
           console.error('>> Error while loading Indicator ' + this.name, e);
       }
-    }
-
-    public getIndicatorData() : IAbstractLineIndicatorFormat[] {
-      return this.indicatorData;
     }
 
     protected toString(src: IAbstractLineIndicatorFormat) : string {

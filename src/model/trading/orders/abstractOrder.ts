@@ -1,5 +1,6 @@
-import { AbstractIndicator, IAbstractIndicatorFormat } from "../indicator/abstractIndicator";
-import { HistoricalCandle } from "../candle";
+import { AbstractIndicator, IAbstractIndicatorFormat } from "../../indicator/abstractIndicator";
+import { HistoricalCandle } from "../../candle";
+import { Util } from "../../../util";
 
 export abstract class AbstractOrder<IndicatorFormat extends IAbstractIndicatorFormat> {
 
@@ -10,10 +11,18 @@ export abstract class AbstractOrder<IndicatorFormat extends IAbstractIndicatorFo
                     protected readonly indicators: AbstractIndicator<IndicatorFormat>[],
                     protected readonly dataCandles: HistoricalCandle[] ) {
 
-                        this.isActive = false;
+                    this.isActive = false;
+
+                    // init indicator
+                    for(const indicator of this.indicators) {
+                        indicator.loadData(dataCandles);
+                    }
 
     }
 
+    /**
+     * Tries to execute the current order and calls entry and exit functions
+     */
     public run(): void {
 
         if(this.entryCondition(this.indicators, this.dataCandles)){
@@ -33,11 +42,13 @@ export abstract class AbstractOrder<IndicatorFormat extends IAbstractIndicatorFo
     protected createEntry() : void {
         this.isActive = true;
         // ... FIXME
+        Util.debugLog('>> Order is active');
     }
 
     protected createExit() : void {
         this.isActive = false;
         // ... FIXME
+        Util.debugLog('>> Order is inactive');
     }
 
 }

@@ -6,17 +6,14 @@ import { HistoricalCandle } from './model/candle';
 import { SMA } from './model/indicator/sma';
 
 import {AbstractLineIndicator} from './model/indicator/abstractIndicator'
+import { SMABasedOrder } from './model/trading/orders/smaBasedOrder';
 
 const testComp: Company = new Company('AAPL');
 
 //testComp.initOnline().then(() => { console.log(testComp) });
 testComp.initOnlineHistorical('2017-01-01','2017-10-25').then(() => {
 
-    const sma : AbstractLineIndicator = new SMA(7);
-
-    sma.loadData(testComp.getHistoricalData());
-
-    sma.printToConsole();
+    new SMABasedOrder(9.90,testComp.getHistoricalData()).run();
 
         /*
         
