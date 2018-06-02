@@ -2,8 +2,12 @@ declare const require;
 const yahooFinance = require('yahoo-finance')
 const moment = require('moment')
 
+import * as _ from 'lodash';
+
 import * as Promise from 'promise';
-import { IYahooFinance } from '../typings/yahoo-finance';
+import { IYahooFinance, IYahooFinanceRSSFeedEntry, IYahooFinanceElement } from '../typings/yahoo-finance';
+
+import {RSSReader} from '../services/rss'
 
 import { IQuoteSummaryDetail } from '../typings/yahoo-finance';
 import { IQuotePrice } from '../typings/yahoo-finance';
@@ -30,10 +34,35 @@ export class Company {
   private financialData: IFinancialData;
   private candles: HistoricalCandle[];
 
+  private newsFeed: IYahooFinanceElement[];
+
   constructor(readonly symbol: string) {
   }
 
-  public initOnline(): Promise<{}> {
+  private initNewsFeed(): Promise<{}> {
+
+    return new Promise((success: Function, error: Function) => {
+
+      RSSReader.read<IYahooFinanceRSSFeedEntry[]>('http://finance.yahoo.com/rss/headline?s=yhoo')
+        .then((r) => {
+  
+          this.newsFeed = Util.isDefined(r[0])? _.flatten(r[0].item) : [];
+
+          success();
+  
+        }).catch((e) => {
+          console.error('>> Company >> Could not initialize news feed for ticker ' + this.symbol, e);
+
+          this.newsFeed = [];
+
+          success();
+        }) ;
+
+    });
+
+  }
+
+  private initOnline(): Promise<{}> {
     return new Promise((success: Function, error: Function) => {
 
       Util.debugLog('>> Creating instance from company for ticket symbol ' + this.symbol);
@@ -53,17 +82,15 @@ export class Company {
     });
   }
 
-  public initOnlineHistorical(from: string, to: string, period: string = 'd'): Promise<{}> {
+  private initOnlineHistorical(from: string, to: string, period: string = 'd'): Promise<{}> {
 
     return new Promise((success: Function, error: Function) => {
-
-      Util.debugLog('>> Loading historial data for ' + this.symbol);
 
       yahooFinance.historical({
         symbol: this.symbol,
         from: from,
         to: to,
-        // period: 'd'  // 'd' (daily), 'w' (weekly), 'm' (monthly), 'v' (dividends only)
+        period: period  // 'd' (daily), 'w' (weekly), 'm' (monthly), 'v' (dividends only)
       }, (err, quotes: IHistoricalQuote[]) => {
 
         // sort backwards if needed
@@ -92,8 +119,27 @@ export class Company {
     });
   }
 
+  public init(from: string, to: string, period: string = 'd'): Promise<{}> {
+    return new Promise((success: Function, error: Function) => {
+      
+      this.initNewsFeed()
+        .then(() => {
+            this.initOnline().then(() => {
+              this.initOnlineHistorical(from, to, period).then(() => {
+                success();
+              }).catch((e) => { error(e) })
+            }).catch((e) => { error(e) })
+        }).catch((e) => { error(e) })
+
+    });
+  }
+
   public getHistoricalData(): HistoricalCandle[] { // FixME: add caching
     return this.candles;
+  }
+
+  public getNews(): IYahooFinanceElement[] {
+    return this.newsFeed;
   }
 
 }

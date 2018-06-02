@@ -1,6 +1,6 @@
 import {Company} from './model/company';
 import { Predictor } from './model/predictor';
-import { IHistoricalQuote, IYahooFinanceRSSFeed } from './typings/yahoo-finance';
+import { IHistoricalQuote, IYahooFinanceRSSFeedEntry } from './typings/yahoo-finance';
 import { Util } from './util';
 import { HistoricalCandle } from './model/candle';
 import { SMA } from './model/indicator/sma';
@@ -8,14 +8,10 @@ import { SMA } from './model/indicator/sma';
 import {AbstractLineIndicator} from './model/indicator/abstractIndicator'
 import { SMABasedOrder } from './model/trading/orders/smaBasedOrder';
 
-import {RSSReader} from './services/rss'
-
 const testComp: Company = new Company('AAPL');
 
-RSSReader.read<IYahooFinanceRSSFeed[]>('http://finance.yahoo.com/rss/headline?s=yhoo')
-    .then((r) => {console.log(r[0])}).catch((e) => {console.error(e)}) ;
+testComp.init('2017-01-01','2017-10-25').then(() => { console.log(testComp.getNews()[0].description) });
 
-//testComp.initOnline().then(() => { console.log(testComp) });
 //testComp.initOnlineHistorical('2017-01-01','2017-10-25').then(() => {
 
     //new SMABasedOrder(9.90,testComp.getHistoricalData()).run();
