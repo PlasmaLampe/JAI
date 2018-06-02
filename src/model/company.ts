@@ -8,6 +8,7 @@ import * as Promise from 'promise';
 import { IYahooFinance, IYahooFinanceRSSFeedEntry, IYahooFinanceElement } from '../typings/yahoo-finance';
 
 import {RSSReader} from '../services/rss'
+import {HTTP} from '../services/http'
 
 import { IQuoteSummaryDetail } from '../typings/yahoo-finance';
 import { IQuotePrice } from '../typings/yahoo-finance';
@@ -20,6 +21,13 @@ import { IQuote } from '../typings/yahoo-finance';
 import { IHistoricalQuote } from '../typings/yahoo-finance';
 import { Util } from "../util";
 import { HistoricalCandle } from './candle';
+
+export interface ICompanyNewsEntry extends IYahooFinanceElement {
+  /**
+   * The complete content of the news
+   */
+  content: string;
+}
 
 export class Company {
 
@@ -34,7 +42,7 @@ export class Company {
   private financialData: IFinancialData;
   private candles: HistoricalCandle[];
 
-  private newsFeed: IYahooFinanceElement[];
+  private newsFeed: ICompanyNewsEntry[];
 
   constructor(readonly symbol: string) {
   }
@@ -43,12 +51,19 @@ export class Company {
 
     return new Promise((success: Function, error: Function) => {
 
-      RSSReader.read<IYahooFinanceRSSFeedEntry[]>('http://finance.yahoo.com/rss/headline?s=yhoo')
+      RSSReader.read<IYahooFinanceRSSFeedEntry[]>('http://finance.yahoo.com/rss/headline?s=' + this.symbol)
         .then((r) => {
   
           this.newsFeed = Util.isDefined(r[0])? _.flatten(r[0].item) : [];
 
-          success();
+          Util.debugLog('>> Company >> Initializing news feed...');
+
+          let newsDownloads : Promise<{}>[] = [];
+          for(const newsEntry of this.newsFeed) {
+            newsDownloads.push(HTTP.get(newsEntry.link[0]).then(c => newsEntry.content = c.body));
+          }
+
+          Promise.all(newsDownloads).then(() => {success()}).catch((e) => {console.error(e); success(); });
   
         }).catch((e) => {
           console.error('>> Company >> Could not initialize news feed for ticker ' + this.symbol, e);
@@ -138,7 +153,7 @@ export class Company {
     return this.candles;
   }
 
-  public getNews(): IYahooFinanceElement[] {
+  public getNews(): ICompanyNewsEntry[] {
     return this.newsFeed;
   }
 

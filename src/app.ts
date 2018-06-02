@@ -5,12 +5,25 @@ import { Util } from './util';
 import { HistoricalCandle } from './model/candle';
 import { SMA } from './model/indicator/sma';
 
+import * as fs from 'fs';
+
 import {AbstractLineIndicator} from './model/indicator/abstractIndicator'
 import { SMABasedOrder } from './model/trading/orders/smaBasedOrder';
 
-const testComp: Company = new Company('AAPL');
+const testComp: Company = new Company('EXK');
 
-testComp.init('2017-01-01','2017-10-25').then(() => { console.log(testComp.getNews()[0].description) });
+testComp.init('2017-01-01','2017-10-25').then(() => { 
+    
+    fs.writeFile("/Users/jorgamelunxen/Documents/dev2/JAI/"+testComp.getNews()[0].guid[0]._+'.html', testComp.getNews()[0].content, function(err) {
+        if(err) {
+            return console.log(err);
+        }
+    
+        console.log("The file was saved!");
+    }); 
+
+    console.log(testComp.getNews()[0].content) 
+});
 
 //testComp.initOnlineHistorical('2017-01-01','2017-10-25').then(() => {
 

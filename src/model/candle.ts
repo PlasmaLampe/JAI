@@ -32,8 +32,6 @@ export class HistoricalCandle {
     
   constructor(readonly symbol: string, readonly historialData: IHistoricalQuote) {
 
-    Util.debugLog('>> Creating candle for symbol ' + symbol + ' for date ' + historialData.date);
-
     this.date = historialData.date;
 
     this.min = historialData.low;

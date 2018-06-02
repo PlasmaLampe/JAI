@@ -62,12 +62,20 @@ declare module yahooFinance {
     /**
      * Unique identifier for the item. For news items the guid is the Yahoo! Finance ID for the listing. The attribute isPermaLink is false.
      */
-    guid: string[];
+    guid: IYahooFinanceIdentifier[];
 
     /**
      * The date and time this news item was posted, in the date format defined by RFC822 Section 5, Mon, 256 Sep 17:25:18 -0700.
      */
     pubDate: string[];
+  }
+
+  export interface IYahooFinanceIdentifier {
+    _ : string;
+
+    $ : {
+      isPermaLink: boolean;
+    }
   }
 
   export interface IYahooFinanceImageElement {
